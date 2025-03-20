@@ -20,7 +20,7 @@ BackgroundCosmology::BackgroundCosmology(
 {
   H0 = h * Constants.H0_over_h;
   OmegaR = (2 * pow(M_PI,3) * pow(Constants.k_b*TCMB,4) * 8 * Constants.G)/(90 * pow(Constants.hbar,3) * pow(Constants.c,5) * pow(H0,2));
-  OmegaNu = Neff * (7/8) * pow(4/11, 4/3) * OmegaR;
+  OmegaNu = Neff * (7.0/8.0) * pow(4.0/11.0, 4.0/3.0) * OmegaR;
   OmegaLambda = 1 - (OmegaB + OmegaCDM + OmegaK + OmegaR + OmegaNu);
   
 }

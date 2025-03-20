@@ -21,7 +21,9 @@ int main(int argc, char **argv){
   double TCMB        = 2.7255; //2.7255
 
   // Recombination parameters
-  double Yp          = 0.245;
+  double Yp          = 0;
+  double zreion = 8.0;
+  double dzreion = 0.5;
 
   // Power-spectrum parameters
   double A_s         = 2.1e-9;
@@ -42,17 +44,14 @@ int main(int argc, char **argv){
 
   // Do the supernova fits. Uncomment when you are ready to run this
   // Make sure you read the comments on the top of src/SupernovaFitting.h
-  mcmc_fit_to_supernova_data("data/supernovadata.txt", "results_supernovafitting.txt");
-
-  // Remove when module is completed
-  return 0;
+  //mcmc_fit_to_supernova_data("data/supernovadata.txt", "results_supernovafitting.txt");
 
   //=========================================================================
   // Module II
   //=========================================================================
   
   // Solve the recombination history
-  RecombinationHistory rec(&cosmo, Yp);
+  RecombinationHistory rec(&cosmo, Yp, zreion, dzreion);
   rec.solve();
   rec.info();
 

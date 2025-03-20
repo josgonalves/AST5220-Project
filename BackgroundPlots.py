@@ -50,6 +50,23 @@ epsilon_0   = 13.605693122994 * eV;         # Ionization energy for the ground s
 xhi0        = 24.587387 * eV;               # Ionization energy for neutral Helium
 xhi1        = 4.0 * epsilon_0;              # Ionization energy for singly ionized Helium
 
+#Planck best fit values
+
+h           = 0.67
+OmegaB      = 0.05
+OmegaCDM    = 0.267
+OmegaK      = 0.0
+Neff        = 3.046
+TCMB        = 2.7255
+
+
+
+H0 = h * H0_over_h
+OmegaR = (2 * pow(np.pi,3) * pow(k_b*TCMB,4) * 8 * G)/(90 * pow(hbar,3) * pow(c,5) * pow(H0,2))
+OmegaNu = Neff * (7/8) * pow(4/11, 4/3) * OmegaR
+OmegaLambda = 1 - (OmegaB + OmegaCDM + OmegaK + OmegaR + OmegaNu)
+
+
 
 #opening the cosmology.txt file
 with open("cosmology.txt", 'r') as file:
@@ -156,6 +173,8 @@ print(matradequalxtz)
 print(matlambdaequalxtz)
 print(acceleration_startxtz)
 
+print(matradequalxtz[1]/Gyr)
+
 #%%
 #Plot of all of the cosmological params summed over x
 plt.figure(0)
@@ -181,9 +200,18 @@ plt.xlabel("x", fontsize = 14)
 plt.tick_params(axis='y', labelsize=11.5)
 plt.xlim([-15,0])
 
+rad_domination = np.linspace(-15, matradequalxtz[0], 1000)
+mat_domination = np.linspace(matradequalxtz[0], matlambdaequalxtz[0], 1000)
+print((OmegaB+OmegaCDM)**(1/2))
+print((OmegaR+OmegaNu)**(1/2))
+print(H0)
+
 
 plt.yscale('log')
 plt.plot(valuesdic['x'][:1126], [i*Mpc/(100*km) for i in valuesdic['Hp']][:1126])
+plt.plot(rad_domination, [np.exp(-i)*H0*(OmegaR+OmegaNu)**(1/2)*Mpc/(100*km) for i in rad_domination], linestyle ='--',alpha = 0.9)
+plt.plot(mat_domination, [np.exp(-i/2)*H0*(OmegaB+OmegaCDM)**(1/2)*Mpc/(100*km) for i in mat_domination], linestyle ='--', alpha = 0.9)
+print(H0)
 plt.savefig(BACKGROUND_DIR + "/Hp_of_x.png")
 
 
@@ -277,17 +305,31 @@ plt.savefig(SUPERNOVA_DIR + "/Luminosity_distance_comparison.png", bbox_inches='
 plt.figure(7)
 plt.title("$\Omega_i$", fontsize = 17)
 plt.grid()
-plt.xlabel('x', fontsize = 17)
+plt.xlabel('z', fontsize = 17)
 plt.tick_params(axis='both', labelsize=13, pad = 5)
-plt.xlim([-15,5])
+#plt.xlim([-15,5])
+plt.xscale('log')
+plt.xlim([z[0], z[-376]])
+plt.xticks(np.logspace(-2, 6, 5))
 
-plt.plot(valuesdic['x'], OmegaM, label = '$\Omega_{M} = \Omega_b + \Omega_{CDM}$')
-plt.plot(valuesdic['x'], OmegaRel, label = r'$\Omega_{r} = \Omega_{\gamma} + \Omega_{\nu}$')
-plt.plot(valuesdic['x'], valuesdic['OmegaLambda'], label = '$\Omega_{\Lambda}$')
 
-plt.axvline(matradequalxtz[0], linestyle='--', color='#BA8E23')
-plt.axvline(matlambdaequalxtz[0], linestyle='--', color='red')
-plt.axvline(acceleration_startxtz[0], linestyle='--', color='black')
+OmegaM.reverse()
+OmegaRel.reverse()
+valuesdic['OmegaLambda'].reverse()
+
+plt.plot(z, OmegaM, label = '$\Omega_{M} = \Omega_b + \Omega_{CDM}$')
+plt.plot(z, OmegaRel, label = r'$\Omega_{r} = \Omega_{\gamma} + \Omega_{\nu}$')
+plt.plot(z, valuesdic['OmegaLambda'], label = '$\Omega_{\Lambda}$')
+
+#Undo the reversion
+
+OmegaM.reverse()
+OmegaRel.reverse()
+valuesdic['OmegaLambda'].reverse()
+
+plt.axvline(matradequalxtz[2], linestyle='--', color='#BA8E23')
+plt.axvline(matlambdaequalxtz[2], linestyle='--', color='red')
+plt.axvline(acceleration_startxtz[2], linestyle='--', color='black')
 
 plt.legend(loc='upper left', fontsize=13, bbox_to_anchor=(1, 1))
 plt.savefig(BACKGROUND_DIR + "/Evolution_of_cosmo_params.png", bbox_inches='tight')  

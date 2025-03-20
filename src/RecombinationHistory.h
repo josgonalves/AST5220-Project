@@ -17,13 +17,17 @@ class RecombinationHistory{
     
     // Helium fraction
     double Yp;
+
+    // Reionization parameters
+    double zreion;
+    double dzreion;
  
     // The start and end points for recombination arrays (can be modified)
     const double x_start  = Constants.x_start;
-    const double x_end    = Constants.x_end;
+    const double x_end    = 0;
     
     // Numbers of points of Xe,ne array (modify as you see fit)
-    const int npts_rec_arrays = 4000;
+    const int npts_rec_arrays = 5000;
   
     // Xe for when to switch between Saha and Peebles
     const double Xe_saha_limit = 0.99;
@@ -48,10 +52,19 @@ class RecombinationHistory{
     // The two things we need to solve: Xe/ne and tau
     void solve_for_optical_depth_tau();
 
+    // Solve the sound horizon ODE
+    void solve_sound_horizon();
+
     // Splines contained in this class
     Spline log_Xe_of_x_spline{"Xe"};
+    Spline log_Xe_reion_of_x_spline{"Xe_reion"};
     Spline tau_of_x_spline{"tau"}; 
+    Spline tau_reion_of_x_spline{"tau_reion"};
     Spline g_tilde_of_x_spline{"g"};  
+    Spline g_tilde_reion_of_x_spline{"g_reion"};
+    Spline log_Xe_of_x_Saha_spline{"Xe_Saha"};
+    Spline tau_of_x_Saha_spline{"tau_Saha"};
+    Spline sound_horizon_spline{"Sound_Horizon"};
 
   public:
 
@@ -59,7 +72,7 @@ class RecombinationHistory{
     RecombinationHistory() = delete;
     RecombinationHistory(
         BackgroundCosmology *cosmo, 
-        double Yp);
+        double Yp, double zreion, double dzreion);
 
     // Do all the solving
     void solve();
@@ -77,9 +90,24 @@ class RecombinationHistory{
     double g_tilde_of_x(double x) const;
     double dgdx_tilde_of_x(double x) const;
     double ddgddx_tilde_of_x(double x) const;
+    double tau_reion_of_x(double x) const;
+    double dtaudx_reion_of_x(double x) const;
+    double ddtauddx_reion_of_x(double x) const;
+    double g_tilde_reion_of_x(double x) const;
+    double dgdx_tilde_reion_of_x(double x) const;
+    double ddgddx_tilde_reion_of_x(double x) const;
     double Xe_of_x(double x) const;
     double ne_of_x(double x) const;
+    double Xe_reion_of_x(double x) const;
     double get_Yp() const;
+    double Xe_of_x_Saha(double x) const;
+    double sound_horizon(double x) const;
+
+    // Finding last scattering surface and recombination
+    double last_scattering_surface() const;
+    double last_scattering_surface_Saha() const;
+    double x_at_recombination() const;
+    double x_at_recombination_Saha() const;
 };
 
 #endif

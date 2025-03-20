@@ -104,7 +104,7 @@ TCMB        = 2.7255
 
 
 
-H0 = h
+H0 = h * H0_over_h
 OmegaR = (2 * pow(np.pi,3) * pow(k_b*TCMB,4) * 8 * G)/(90 * pow(hbar,3) * pow(c,5) * pow(H0,2))
 OmegaNu = Neff * (7/8) * pow(4/11, 4/3) * OmegaR
 OmegaLambda = 1 - (OmegaB + OmegaCDM + OmegaK + OmegaR + OmegaNu)
