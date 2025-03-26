@@ -181,14 +181,14 @@ axes[0].set_title(r"$\tilde{g}$", fontsize = 17, pad = 10)
 axes[1].set_title(r"$\tilde{g}'$", fontsize = 17, pad = 10) 
 axes[2].set_title(r"$\tilde{g}''$", fontsize = 17, pad = 10) 
 
-axes[0].plot(valuesdic['x'], valuesdic['g_tilde'], color = 'orange', label = "No reionization")
+axes[0].plot(valuesdic['x'], valuesdic['g_tilde'], color = 'orange', label = "No reionization", lw = 2)
 axes[0].plot(valuesdic['x'], valuesdic['g_tilde_reion'], '--', color = 'blue', alpha=0.6, label = "Reionization")
-axes[0].axvline(last_scattering_xtz[0], linestyle='-', color='red')
+axes[0].axvline(last_scattering_xtz[0], linestyle='--', color='purple', alpha = 0.9)
 
-axes[1].plot(valuesdic['x'], valuesdic['dgdx'], color = 'orange', label = "No reionization")
+axes[1].plot(valuesdic['x'], valuesdic['dgdx'], color = 'orange', label = "No reionization", lw = 2)
 axes[1].plot(valuesdic['x'], valuesdic['dgdx_reion'],'--', color = 'blue', alpha=0.6, label = "Reionization")
 
-axes[2].plot(valuesdic['x'], valuesdic['ddgddx'], color = 'orange', label = "No reionization")
+axes[2].plot(valuesdic['x'], valuesdic['ddgddx'], color = 'orange', label = "No reionization", lw = 2)
 axes[2].plot(valuesdic['x'], valuesdic['ddgddx_reion'],'--', color = 'blue', alpha=0.6, label = "Reionization")
 axes[2].legend(fontsize = 14)
 
