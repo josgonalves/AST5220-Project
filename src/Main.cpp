@@ -13,7 +13,7 @@ int main(int argc, char **argv){
   //=========================================================================
 
   // Background parameters
-  double h           = 0.67;
+  double h           = 0.67; //0.67
   double OmegaB      = 0.05; //0.05
   double OmegaCDM    = 0.267; //0.267
   double OmegaK      = 0.0; //0.0
@@ -44,6 +44,7 @@ int main(int argc, char **argv){
 
   // Do the supernova fits. Uncomment when you are ready to run this
   // Make sure you read the comments on the top of src/SupernovaFitting.h
+  
   //mcmc_fit_to_supernova_data("data/supernovadata.txt", "results_supernovafitting.txt");
 
   //=========================================================================
@@ -58,8 +59,6 @@ int main(int argc, char **argv){
   // Output recombination quantities
   rec.output("recombination.txt");
   
-  // Remove when module is completed
-  return 0;
 
   //=========================================================================
   // Module III
@@ -71,8 +70,10 @@ int main(int argc, char **argv){
   pert.info();
   
   // Output perturbation quantities
-  double kvalue = 0.01 / Constants.Mpc;
-  pert.output(kvalue, "perturbations_k0.01.txt");
+  double kvalue1 = 0.1 / Constants.Mpc, kvalue2 = 0.01 / Constants.Mpc, kvalue3 = 0.001 / Constants.Mpc;
+  pert.output(kvalue1, "perturbations_k0.1.txt");
+  pert.output(kvalue2, "perturbations_k0.01.txt");
+  pert.output(kvalue3, "perturbations_k0.001.txt");
   
   // Remove when module is completed
   return 0;

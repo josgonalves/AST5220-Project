@@ -202,16 +202,14 @@ plt.xlim([-15,0])
 
 rad_domination = np.linspace(-15, matradequalxtz[0], 1000)
 mat_domination = np.linspace(matradequalxtz[0], matlambdaequalxtz[0], 1000)
-print((OmegaB+OmegaCDM)**(1/2))
-print((OmegaR+OmegaNu)**(1/2))
-print(H0)
+
 
 
 plt.yscale('log')
 plt.plot(valuesdic['x'][:1126], [i*Mpc/(100*km) for i in valuesdic['Hp']][:1126])
-plt.plot(rad_domination, [np.exp(-i)*H0*(OmegaR+OmegaNu)**(1/2)*Mpc/(100*km) for i in rad_domination], linestyle ='--',alpha = 0.9)
-plt.plot(mat_domination, [np.exp(-i/2)*H0*(OmegaB+OmegaCDM)**(1/2)*Mpc/(100*km) for i in mat_domination], linestyle ='--', alpha = 0.9)
-print(H0)
+plt.plot(rad_domination, [np.exp(-i)*H0*(OmegaR+OmegaNu)**(1/2)*Mpc/(100*km) for i in rad_domination], linestyle ='--',alpha = 0.9, label = 'Radiation domination expectation')
+plt.plot(mat_domination, [np.exp(-i/2)*H0*(OmegaB+OmegaCDM)**(1/2)*Mpc/(100*km) for i in mat_domination], linestyle ='--', alpha = 0.9, label= 'Matter domination expectation')
+plt.legend()
 plt.savefig(BACKGROUND_DIR + "/Hp_of_x.png")
 
 
@@ -313,19 +311,9 @@ plt.xlim([z[0], z[-376]])
 plt.xticks(np.logspace(-2, 6, 5))
 
 
-OmegaM.reverse()
-OmegaRel.reverse()
-valuesdic['OmegaLambda'].reverse()
-
 plt.plot(z, OmegaM, label = '$\Omega_{M} = \Omega_b + \Omega_{CDM}$')
 plt.plot(z, OmegaRel, label = r'$\Omega_{r} = \Omega_{\gamma} + \Omega_{\nu}$')
 plt.plot(z, valuesdic['OmegaLambda'], label = '$\Omega_{\Lambda}$')
-
-#Undo the reversion
-
-OmegaM.reverse()
-OmegaRel.reverse()
-valuesdic['OmegaLambda'].reverse()
 
 plt.axvline(matradequalxtz[2], linestyle='--', color='#BA8E23')
 plt.axvline(matlambdaequalxtz[2], linestyle='--', color='red')
@@ -344,7 +332,7 @@ plt.grid()
 plt.tick_params(axis='y', labelsize=11.5)
 plt.xlim([-15,0])
 
-plt.title(r"$\frac{\eta\mathcal{H}}{c}$", fontsize = 16, pad = 10)
+plt.title(r"$\eta\mathcal{H}$", fontsize = 16, pad = 10)
 plt.xlabel('x', fontsize = 14)
 
 plt.plot(valuesdic['x'][:1126], [i*j/c for i,j in zip(valuesdic['eta'],valuesdic['Hp'])][:1126])

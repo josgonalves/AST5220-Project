@@ -147,7 +147,7 @@ namespace Utils{
     return res;
   }
 
-  // Function to get the spherical Bessel function j_n(x)
+  // Function to get the spherical Bessel function j_l(x)
   double j_ell(const int ell, const double x){
     if(x==0.0) return ell == 0 ? 1.0 : 0.0;
 

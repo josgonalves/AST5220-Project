@@ -100,6 +100,8 @@ class RecombinationHistory{
     double ne_of_x(double x) const;
     double Xe_reion_of_x(double x) const;
     double get_Yp() const;
+    double get_zreion() const;
+    double get_dzreion() const;
     double Xe_of_x_Saha(double x) const;
     double sound_horizon(double x) const;
 

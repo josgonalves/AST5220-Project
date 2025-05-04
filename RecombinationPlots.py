@@ -74,8 +74,9 @@ with open("recombination.txt", 'r') as file:
     sound_horizon = float(lines[-1].split(':')[1])
     freeze_out = valuesdic['Xe'][-1]
     
+    print(valuesdic['x'])
     # Obtain the plateau of tau_reion 
-    plateau_index = valuesdic['x'].index(-6.0012) # Use the index of some x value within the plateau
+    plateau_index = valuesdic['x'].index(-3.39968) # Use the index of some x value within the plateau
     tau_plateau = valuesdic['tau_reion'][plateau_index]
 
 print("Optical depth plateau: ", tau_plateau)
@@ -90,12 +91,19 @@ print("Recombination Saha (x, t, z): ", recombination_Saha_xtzT)
 print("Previously determined values of t converted to Kyr:")
 print(last_scattering_xtz[1]/(1000*yr))
 print(recombination_xtzT[1]/(1000*yr))
-print(recombination_xtzT[3]*k_b/eV)
-
 print(last_scattering_Saha_xtz[1]/(1000*yr))
 print(recombination_Saha_xtzT[1]/(1000*yr))
 
-print(np.exp(2.25)-1)
+print("Mean photon energy at recombination (eV):")
+print(recombination_xtzT[3]*k_b/eV)
+
+
+
+
+
+"""
+Define the directories for plots. If they don't yet exist, create them.
+"""
 
 PROJECT_ROOT_DIR = "Project_plots"
 if not os.path.exists(PROJECT_ROOT_DIR):
@@ -104,7 +112,7 @@ if not os.path.exists(PROJECT_ROOT_DIR):
 RECOMBINATION_DIR = os.path.join(PROJECT_ROOT_DIR, "Recombination_history")
 if not os.path.exists(RECOMBINATION_DIR):
     os.makedirs(RECOMBINATION_DIR)
-#print(valuesdic['Xe_saha'])
+
 #%%
 
 plt.figure(0, figsize = (7,4))
@@ -168,12 +176,12 @@ plt.savefig(RECOMBINATION_DIR + "/s_of_x.png")
 
 #%%
 
-fig, axes = plt.subplots(nrows=3, figsize=(7, 14), sharex=False)
+fig, axes = plt.subplots(nrows=3, figsize=(8.5, 14), sharex=False)
 
 
 for i in axes:
     i.set_xlabel('x', fontsize = 14)
-    i.set_xlim([-15,0])
+    i.set_xlim([-10,0])
     i.grid()
     i.tick_params(axis='both', labelsize=12)
     

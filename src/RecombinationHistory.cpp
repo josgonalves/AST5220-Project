@@ -144,7 +144,7 @@ std::pair<double,double> RecombinationHistory::electron_fraction_from_saha_equat
 
   // Fetch cosmological parameters
   const double OmegaB0 = cosmo->get_OmegaB(0);
-  const double H0 = cosmo->H_of_x(0);
+  const double H0 = cosmo->get_H0();
   const double Tb = cosmo->get_TCMB(x);
   const double crit_density = (3*pow(H0,2))/(8*M_PI*G);
 
@@ -184,7 +184,7 @@ int RecombinationHistory::rhs_peebles_ode(double x, const double *Xe, double *dX
   const double fine_structure = 1.0/137.0359992;
 
   const double OmegaB0 = cosmo->get_OmegaB(0);
-  const double H0 = cosmo->H_of_x(0);
+  const double H0 = cosmo->get_H0();
   double Tb = cosmo->get_TCMB(x);
   double H = cosmo->H_of_x(x);
   const double crit_density = (3*pow(H0,2))/(8*M_PI*G);
@@ -416,7 +416,7 @@ double RecombinationHistory::ne_of_x(double x) const{
   // Necessary cosmological parameters and scale factor
   const double a = exp(x);
   const double OmegaB0 = cosmo->get_OmegaB(0);
-  const double H0 = cosmo->H_of_x(0);
+  const double H0 = cosmo->get_H0();
   const double crit_density = 3*pow(H0,2)/(8*M_PI*Constants.G);
   
   // Fetching Xe and determining baryon number density
@@ -428,6 +428,14 @@ double RecombinationHistory::ne_of_x(double x) const{
 
 double RecombinationHistory::get_Yp() const{
   return Yp;
+}
+
+double RecombinationHistory::get_zreion() const{
+  return zreion;
+}
+
+double RecombinationHistory::get_dzreion() const{
+  return dzreion;
 }
 
 double RecombinationHistory::last_scattering_surface() const{
