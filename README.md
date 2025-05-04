@@ -36,8 +36,7 @@ Keep in mind that, to facilitate debugging after milestone I, the line `mcmc_fit
      - `Remaining methods`: used to obtain the values of `x` for important events in the evolution of the Universe.
 
 -  `SupernovaFitting.h` - Defines a function `mcmc_fit_to_supernova_data`. It takes two strings, `supernovadata_filename` (in the case of this project, `data\supernovadata`, which contains the redshifts, luminosity distances and their errors for 31 supernovas) and `outfile`. 
-
-This function performs Markov chain Monte Carlo with a `BackgroundCosmology` object by varying 3 of its parameters (`h`, `OmegaK` and `OmegaM`). For all accepted steps, the values of these 3 parameters, along with the chi squared obtained by comparing the predicted luminosity distances with those present in `data\supernovadata`, are printed into `outfile.txt`.
+ - This function performs Markov chain Monte Carlo with a `BackgroundCosmology` object by varying 3 of its parameters (`h`, `OmegaK` and `OmegaM`). For all accepted steps, the values of these 3 parameters, along with the chi squared obtained by comparing the predicted luminosity distances with those present in `data\supernovadata`, are printed into `outfile.txt`.
 
 - `BackgroundPlots.py` and `Supernova_fit_plots.py`: python scripts that produce the plots for the background quantities and the supernova fits and save them to `Project_plots\Background_cosmology` and `Project_plots\Supernova_fit`, respectively.
     
@@ -73,7 +72,7 @@ This function performs Markov chain Monte Carlo with a `BackgroundCosmology` obj
      - `x_start`, `x_end`, `n_x`: minimum and maximum values of `x`, and number of different values of `x` to be used for solving differential equations and splining. The `x` arrays are set up with linear spacing between `x_start` and `x_end`;
      - A `Perturbations` object is initialized by specifying the pointers `*cosmo` and `*rec`.
     - **Methods**
-     - - `solve`: main method for this class. Solves the system of differential equations for the perturbations and splines the results to produce bidimensional functions of `(x,k)` (`integrate_perturbations`). Also computes the source functions for the CMB and matter power spectra (`compute_source_functions`).
+     - `solve`: main method for this class. Solves the system of differential equations for the perturbations and splines the results to produce bidimensional functions of `(x,k)` (`integrate_perturbations`). Also computes the source functions for the CMB and matter power spectra (`compute_source_functions`).
         - The system is evolved separately between `x_start` and `x_end` for each value of `k` between `k_min` and `k_max`;
         - The 2 systems of equations and sets of initial conditions (both in the tight-coupling and full regimes) are defined in separate, auxiliary methods.
      - `info`: prints information about how the system of perturbations is being integrated (most importantly, the `k` and `x` limits and number of points and the inclusion of `neutrinos` and/or `polarization`);
