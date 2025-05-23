@@ -51,7 +51,7 @@ class PowerSpectrum {
     
     // Generate splines of bessel-functions for each ell needed
     // to do the LOS integration
-    void generate_bessel_function_splines();
+    void generate_bessel_function_splines(Vector & k_array);
     
     //=====================================================================
     // [2] Do the line of sight integration and spline the result
@@ -108,7 +108,7 @@ class PowerSpectrum {
     double primordial_power_spectrum(const double k) const;
 
     // Get P(k,x) for a given x in units of (Mpc)^3
-    double get_matter_power_spectrum(const double x, const double k_mpc) const;
+    double get_matter_power_spectrum(const double x, const double k) const;
 
     // Get the quantities we have computed
     double get_cell_TT(const double ell) const;
@@ -116,7 +116,7 @@ class PowerSpectrum {
     double get_cell_EE(const double ell) const;
 
     // Output Cells in units of l(l+1)/2pi (muK)^2
-    void output(std::string filename) const;
+    void output(std::string filename1, std::string filename2) const;
 };
 
 #endif

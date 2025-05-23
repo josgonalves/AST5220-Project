@@ -52,7 +52,7 @@ xhi0        = 24.587387 * eV;               # Ionization energy for neutral Heli
 xhi1        = 4.0 * epsilon_0;              # Ionization energy for singly ionized Helium
 
 
-#opening the cosmology.txt file
+#opening the recombination.txt file
 with open("recombination.txt", 'r') as file:
     #skips the first two lines of the file
     for line in range(2):

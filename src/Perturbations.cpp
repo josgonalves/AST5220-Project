@@ -52,9 +52,6 @@ void Perturbations::integrate_perturbations(){
   const double OmegaNu0 = cosmo -> get_OmegaNu(0);
   const double H0 = cosmo -> get_H0();
 
-  // Needed to implement reionization in case x > xreion
-  const double zreion = rec -> get_zreion();
-  const double xreion = log(1.0/(1.0+zreion));
 
   // Make a vector of vectors to contain the values of all evolved perturbations (n_ell_tot_full)
   // but also Pi and Psi (+ 2)
@@ -182,14 +179,8 @@ void Perturbations::integrate_perturbations(){
 
           // Background and recombination variables
           double Hp = cosmo -> Hp_of_x(x_tc[j]);
-          double tauprime;
+          double tauprime = rec -> dtaudx_of_x(x_tc[j], true);
 
-          // Calculate tauprime with a different function of x depending on whether we are past reionization or not
-          if(x_tc[j] < xreion){
-            tauprime = rec -> dtaudx_of_x(x_tc[j]);
-          } else{
-            tauprime = rec -> dtaudx_reion_of_x(x_tc[j]);
-          }
 
           // For the tight coupling regime, simply append the value of Theta2 as given by the initial conditions to
           // y_tc[i] (this depends on whether or not polarization is true)
@@ -214,12 +205,8 @@ void Perturbations::integrate_perturbations(){
         for(int j = 0; j<x_tc.size(); j++){ 
           int l = i - Constants.ind_start_theta;
           double Hp = cosmo -> Hp_of_x(x_tc[j]);
-          double tauprime;
-          if(x_tc[j] < xreion){
-            tauprime = rec -> dtaudx_of_x(x_tc[j]);
-          } else{
-            tauprime = rec -> dtaudx_reion_of_x(x_tc[j]);
-          }
+          double tauprime = rec -> dtaudx_of_x(x_tc[j], true);
+
           y_tc[i].push_back(-(l)/(2.0*l + 1.0) * (c*k)/(Hp*tauprime) * y_tc[i-1][j]);
         }
 
@@ -247,12 +234,8 @@ void Perturbations::integrate_perturbations(){
         // Append the values of Thetap1 during tight coupling (it is not dynamically evolved in this regime)
         for(int j = 0; j < x_tc.size(); j++){
           double Hp = cosmo -> Hp_of_x(x_tc[j]);
-          double tauprime;
-          if(x_tc[j] < xreion){
-            tauprime = rec -> dtaudx_of_x(x_tc[j]);
-          } else{
-            tauprime = rec -> dtaudx_reion_of_x(x_tc[j]);
-          }
+          double tauprime = rec -> dtaudx_of_x(x_tc[j], true);
+
           y_tc[i].push_back((-c*k/(4*Hp*tauprime))*y_tc[Constants.ind_start_theta + 2][j]);
         }
         
@@ -282,12 +265,8 @@ void Perturbations::integrate_perturbations(){
         // Append the values of ThetapL during tight coupling (it is not dynamically evolved in this regime)
         for(int j = 0; j < x_tc.size(); j++){
           double Hp = cosmo -> Hp_of_x(x_tc[j]);
-          double tauprime;
-          if(x_tc[j] < xreion){
-            tauprime = rec -> dtaudx_of_x(x_tc[j]);
-          } else{
-            tauprime = rec -> dtaudx_reion_of_x(x_tc[j]);
-          }
+          double tauprime = rec -> dtaudx_of_x(x_tc[j], true);
+
           y_tc[i].push_back(-l/(2.0*l + 1.0)* (c*k)/(Hp*tauprime) * y_tc[i-1][j]);
         }
 
@@ -493,15 +472,8 @@ Vector Perturbations::set_ic_after_tight_coupling(
   
   const double c = Constants.c;
   
-  // Needed to implement reionization in case x > xreion
-  const double zreion = rec -> get_zreion();
-  const double xreion = log(1.0/(1.0+zreion));
-  double tauprime;
-  if(x < xreion){
-    tauprime = rec -> dtaudx_of_x(x);
-  } else{
-    tauprime = rec -> dtaudx_reion_of_x(x);
-  }
+
+  double tauprime = rec -> dtaudx_of_x(x, true);
 
   // Background variables
   const double Hp = cosmo -> Hp_of_x(x);
@@ -559,20 +531,13 @@ double Perturbations::get_tight_coupling_time(const double k) const{
   double tauprime; 
   const double c = Constants.c;
 
-  // Needed to implement reionization in case x > xreion
-  const double zreion = rec -> get_zreion();
-  const double xreion = log(1.0/(1.0+zreion));
   
   Spline tight_coupling_spline; 
   Vector x_array = Utils::linspace(x_start, x_end, n_x);
   Vector tight_coupling_array(n_x);
   for(size_t i = 0; i < x_array.size(); i++){
-    // Compute the derivative of the optical depth depending on if we are past reionization or not
-    if(x_array[i]< xreion){
-      tauprime = rec -> dtaudx_of_x(x_array[i]);
-    } else{
-      tauprime = rec -> dtaudx_reion_of_x(x_array[i]);
-    }
+    // Compute the derivative of the optical depth
+    tauprime = rec -> dtaudx_of_x(x_array[i], true);
     
     double Hp = cosmo -> Hp_of_x(x_array[i]);
 
@@ -621,9 +586,6 @@ void Perturbations::compute_source_functions(){
   const double c = Constants.c;
   const double eta0 = cosmo -> eta_of_x(0);
 
-  // Needed to implement reionization in case x > xreion
-  const double zreion = rec -> get_zreion();
-  const double xreion = log(1.0/(1.0+zreion));
 
   // Compute source functions
   for(auto ix = 0; ix < x_array.size(); ix++){
@@ -642,10 +604,10 @@ void Perturbations::compute_source_functions(){
       const double eta = cosmo -> eta_of_x(x);
       
       //Fetching recombination values depending on if we are past reionization or not
-      const double tau = (x < xreion)? rec->tau_of_x(x) : rec->tau_reion_of_x(x);
-      const double g_tilde = (x < xreion)? rec->g_tilde_of_x(x) : rec->g_tilde_reion_of_x(x);
-      const double g_tilde_prime = (x < xreion)? rec->dgdx_tilde_of_x(x) : rec->dgdx_tilde_reion_of_x(x);
-      const double g_tilde_pp = (x < xreion)? rec->ddgddx_tilde_of_x(x) : rec->ddgddx_tilde_reion_of_x(x);
+      const double tau = rec->tau_of_x(x, true);
+      const double g_tilde = rec->g_tilde_of_x(x, true);
+      const double g_tilde_prime = rec->dgdx_tilde_of_x(x, true);
+      const double g_tilde_pp = rec->ddgddx_tilde_of_x(x, true);
 
       //Getting all necessary values from the perturbation splines
       const double psi = get_Psi(x,k);
@@ -664,12 +626,16 @@ void Perturbations::compute_source_functions(){
 
 
 
-      // Temperatur source
+      // Temperature source
       ST_array[index] = g_tilde * (theta_0 + psi + (pi/4.0)) + exp(-tau)*(psi_prime-phi_prime)- dHp_g_v/(c*k)+ 3.0/(4.0*pow(c*k, 2))*ddHp_g_pi;
 
+      //ST_array[index] = g_tilde;
       // Polarization source
       if(Constants.polarization){
-        SE_array[index] = (3 * g_tilde * pi)/(4 * pow(k, 2) * pow(eta0 - eta, 2));
+        SE_array[index] = (3.0 * g_tilde * pi)/(4.0 * pow(k, 2) * pow(eta0 - eta, 2));
+        if(x > -0.0001){
+          SE_array[index] = (3.0 * g_tilde * pi)/(4.0 * pow(k, 2) * pow(eta0 - cosmo->eta_of_x(-0.0001), 2));
+        }
       }
     }
   }
@@ -739,19 +705,9 @@ int Perturbations::rhs_tight_coupling_ode(double x, double k, const double *y, d
   const double Hpp = cosmo -> dHpdx_of_x(x);
   
 
-  // Define first two derivatives of tau depending on whether reionization has happened
-  double tauprime;
-  double taupprime;
-  const double zreion = rec -> get_zreion();
-  const double xreion = log(1.0/(1.0+zreion));
-
-  if(x < xreion){
-    tauprime = rec -> dtaudx_of_x(x);
-    taupprime = rec -> ddtauddx_of_x(x);
-  } else{
-    tauprime = rec -> dtaudx_reion_of_x(x);
-    taupprime = rec -> ddtauddx_reion_of_x(x);
-  }
+  // Define first two derivatives of tau
+  double tauprime = rec -> dtaudx_of_x(x, true);
+  double taupprime = rec -> ddtauddx_of_x(x, true);
 
 
   ////////////////////////////////////////////////////////////// 
@@ -848,15 +804,7 @@ int Perturbations::rhs_full_ode(double x, double k, const double *y, double *dyd
   const double R = (4.0*OmegaR0)/(3.0*OmegaB0*a);
 
   // Recombination variables
-  double tauprime;
-  const double zreion = rec -> get_zreion();
-  const double xreion = log(1.0/(1.0+zreion));
-  // 
-  if(x < xreion){
-    tauprime = rec -> dtaudx_of_x(x);
-  } else{
-    tauprime = rec -> dtaudx_reion_of_x(x);
-  }
+  double tauprime = rec -> dtaudx_of_x(x, true);
 
 
   // SET: Scalar quantities (Phi, delta, v, ...)

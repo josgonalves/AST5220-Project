@@ -54,7 +54,7 @@ xhi0        = 24.587387 * eV;               # Ionization energy for neutral Heli
 xhi1        = 4.0 * epsilon_0;              # Ionization energy for singly ionized Helium
 
 
-#opening the cosmology.txt file
+#opening the perturbations files
 with open("perturbations_k0.1.txt", 'r') as file:
    lines = file.readlines()
    
@@ -84,7 +84,7 @@ with open("perturbations_k0.001.txt", 'r') as file:
 """
 Define the directories for plots. If they don't yet exist, create them.
 """
-
+print(valuesdic1['x'].index(-6.00174))
 PROJECT_ROOT_DIR = "Project_plots"
 if not os.path.exists(PROJECT_ROOT_DIR):
     os.makedirs(PROJECT_ROOT_DIR)
@@ -129,7 +129,7 @@ plt.savefig(PERTURBATIONS_DIR + "/photon_neutrino_density.png", bbox_inches = "t
 plt.figure(2, figsize = (7,4))
 plt.grid()
 plt.xlabel('x', fontsize = 14)
-plt.title(r'$ \delta_{CDM}, \delta_b$', fontsize = 17, pad = 10)
+plt.title(r'$ \delta_{\rm CDM}, \delta_{b}$', fontsize = 17, pad = 10)
 plt.tick_params(axis='y', labelsize=11.5)
 
 plt.xlim([-15,0])
@@ -184,7 +184,7 @@ plt.savefig(PERTURBATIONS_DIR + "/photon_neutrino_velocity.png", bbox_inches = "
 plt.figure(5, figsize = (7,4))
 plt.grid()
 plt.xlabel('x', fontsize = 14)
-plt.title(r'$ v_{CDM}, v_b$', fontsize = 17, pad = 10)
+plt.title(r'$ v_{\rm CDM}, v_{b}$', fontsize = 17, pad = 10)
 plt.tick_params(axis='y', labelsize=11.5)
 
 plt.xlim([-15,0])
@@ -309,3 +309,34 @@ axes[1].legend(fontsize = 14)
 plt.subplots_adjust(hspace=0.4)
 
 plt.savefig(PERTURBATIONS_DIR + "/photon_neutrino_quadrupole.png", bbox_inches = "tight")
+
+#%%
+
+#plot overdensity and velocity at k=0.1 for photons and baryons
+
+fig, axes = plt.subplots(nrows=2, figsize=(8.5, 14), sharex=False)
+
+for i in axes:
+    i.set_xlabel('x', fontsize = 14)
+    i.set_xlim([-13,last_scattering_xtz[0]+1])
+    i.grid()
+    i.tick_params(axis='both', labelsize=12)
+
+
+axes[0].set_title(r'$ \delta_{\gamma}, \delta_{b}$', fontsize = 25, pad = 10)
+axes[0].plot(valuesdic1['x'][:3697], [4*i for i in valuesdic1['Theta0']][:3697], color = 'green', label = r'$\delta_{\gamma}$')
+axes[0].plot(valuesdic1['x'][:3697], valuesdic1['delta_b'][:3697], color = 'orange', label = r'$\delta_{b}$')
+axes[0].axvline(last_scattering_xtz[0], linestyle='--', color='black')
+
+
+axes[1].set_title(r'$v_{\gamma}, v_{b}$', fontsize = 25, pad = 10)
+axes[1].plot(valuesdic1['x'][:3697], [-3*i for i in valuesdic1['Theta1']][:3697], color = 'green', label = r'$\v_{\gamma}$')
+axes[1].plot(valuesdic1['x'][:3697], valuesdic1['v_b'][:3697], color = 'orange', label = r'$\v_{b}$')
+axes[1].axvline(last_scattering_xtz[0], linestyle='--', color='black')
+
+axes[0].legend(fontsize = 20)
+axes[1].legend(fontsize = 20)
+
+plt.subplots_adjust(hspace=0.4)
+
+plt.savefig(PERTURBATIONS_DIR + "/photon_baryon_k01.png", bbox_inches = "tight")

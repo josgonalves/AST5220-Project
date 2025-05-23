@@ -48,7 +48,7 @@ extern struct ConstantsAndUnits {
   const double k_max = 0.3     / Mpc;
   
   // Min and max x-value
-  const double x_start = log(1e-10); // It used to be ln(1e-10), which is pretty much -23. This gives cleaner values of a
+  const double x_start = log(1e-10);
   const double x_end   = 5;   // to be presented in the report. x_end = 5 is for showing the D.E. dominated era
 
   // Include polarization and/or neutrinos?

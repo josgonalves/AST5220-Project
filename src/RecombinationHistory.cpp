@@ -223,8 +223,8 @@ void RecombinationHistory::solve_for_optical_depth_tau(){
   // The ODE system dtau_noreion/dx, dtau/dx and dtau_baryon/dx
   ODEFunction dtaudx = [&](double x, const double *tau, double *dtaudx){
     // Get free electron fractions and number densities in the 3 separate cases
-    double Xe = Xe_of_x(x);
-    double Xe_reion = Xe_reion_of_x(x);
+    double Xe = Xe_of_x(x, false);
+    double Xe_reion = Xe_of_x(x, true);
     double Xe_Saha = Xe_of_x_Saha(x);
     double ne = ne_of_x(x);
     double ne_reion = ne * (Xe_reion/Xe);
@@ -346,62 +346,62 @@ void RecombinationHistory::solve_sound_horizon(){
 // Get methods
 //====================================================
 
-double RecombinationHistory::tau_of_x(double x) const{
-  return tau_of_x_spline(x);
+double RecombinationHistory::tau_of_x(double x, bool reion) const{
+  if(reion){
+    return tau_reion_of_x_spline(x);
+  } else{
+    return tau_of_x_spline(x);
+  }
 }
 
-double RecombinationHistory::dtaudx_of_x(double x) const{
-  return tau_of_x_spline.deriv_x(x);
+double RecombinationHistory::dtaudx_of_x(double x, bool reion) const{
+  if(reion){
+    return tau_reion_of_x_spline.deriv_x(x);
+  } else{
+    return tau_of_x_spline.deriv_x(x);
+  }
 }
 
-double RecombinationHistory::ddtauddx_of_x(double x) const{
-  return tau_of_x_spline.deriv_xx(x);
+double RecombinationHistory::ddtauddx_of_x(double x, bool reion) const{
+  if(reion){
+    return tau_reion_of_x_spline.deriv_xx(x);
+  } else{
+    return tau_of_x_spline.deriv_xx(x);
+  }
 }
 
-double RecombinationHistory::g_tilde_of_x(double x) const{
-  return g_tilde_of_x_spline(x);
+double RecombinationHistory::g_tilde_of_x(double x, bool reion) const{
+  if(reion){
+    return g_tilde_reion_of_x_spline(x);
+  } else{
+    return g_tilde_of_x_spline(x);
+  }
+  
 }
 
-double RecombinationHistory::dgdx_tilde_of_x(double x) const{
-  return g_tilde_of_x_spline.deriv_x(x);
+double RecombinationHistory::dgdx_tilde_of_x(double x, bool reion) const{
+  if(reion){
+    return g_tilde_reion_of_x_spline.deriv_x(x);
+  } else{
+    return g_tilde_of_x_spline.deriv_x(x);
+  }
 }
 
-double RecombinationHistory::ddgddx_tilde_of_x(double x) const{
-  return g_tilde_of_x_spline.deriv_xx(x);
+double RecombinationHistory::ddgddx_tilde_of_x(double x, bool reion) const{
+  if(reion){
+    return g_tilde_reion_of_x_spline.deriv_xx(x);
+  } else{
+    return g_tilde_of_x_spline.deriv_xx(x);
+  }
 }
 
-double RecombinationHistory::tau_reion_of_x(double x) const{
-  return tau_reion_of_x_spline(x);
-}
-
-double RecombinationHistory::dtaudx_reion_of_x(double x) const{
-  return tau_reion_of_x_spline.deriv_x(x);
-}
-
-double RecombinationHistory::ddtauddx_reion_of_x(double x) const{
-  return tau_reion_of_x_spline.deriv_xx(x);
-}
-
-double RecombinationHistory::g_tilde_reion_of_x(double x) const{
-  return g_tilde_reion_of_x_spline(x);
-}
-
-double RecombinationHistory::dgdx_tilde_reion_of_x(double x) const{
-  return g_tilde_reion_of_x_spline.deriv_x(x);
-}
-
-double RecombinationHistory::ddgddx_tilde_reion_of_x(double x) const{
-  return g_tilde_reion_of_x_spline.deriv_xx(x);
-}
-
-
-
-double RecombinationHistory::Xe_of_x(double x) const{
-  return exp(log_Xe_of_x_spline(x));
-}
-
-double RecombinationHistory::Xe_reion_of_x(double x) const{
-  return exp(log_Xe_reion_of_x_spline(x));
+double RecombinationHistory::Xe_of_x(double x, bool reion) const{
+  if(reion){
+    return exp(log_Xe_reion_of_x_spline(x));
+  }
+  else{
+    return exp(log_Xe_of_x_spline(x));
+  }
 }
 
 double RecombinationHistory::Xe_of_x_Saha(double x) const{
@@ -420,7 +420,7 @@ double RecombinationHistory::ne_of_x(double x) const{
   const double crit_density = 3*pow(H0,2)/(8*M_PI*Constants.G);
   
   // Fetching Xe and determining baryon number density
-  const double Xe = Xe_of_x(x);
+  const double Xe = Xe_of_x(x, false);
   const double nb = (OmegaB0 * crit_density)/(Constants.m_H * pow(a,3));
 
   return Xe * nb;
@@ -486,23 +486,23 @@ void RecombinationHistory::output(const std::string filename) const{
   fp << std::endl;
   auto print_data = [&] (const double x) {
     fp << x                    << " ";
-    fp << Xe_of_x(x)           << " ";
+    fp << Xe_of_x(x, false)           << " ";
     fp << ne_of_x(x)           << " ";
-    fp << tau_of_x(x)          << " ";
-    fp << dtaudx_of_x(x)       << " ";
-    fp << ddtauddx_of_x(x)     << " ";
-    fp << g_tilde_of_x(x)      << " ";
-    fp << dgdx_tilde_of_x(x)   << " ";
-    fp << ddgddx_tilde_of_x(x) << " ";
+    fp << tau_of_x(x, false)          << " ";
+    fp << dtaudx_of_x(x, false)       << " ";
+    fp << ddtauddx_of_x(x, false)     << " ";
+    fp << g_tilde_of_x(x, false)      << " ";
+    fp << dgdx_tilde_of_x(x, false)   << " ";
+    fp << ddgddx_tilde_of_x(x, false) << " ";
     fp << Xe_of_x_Saha(x) << " ";
     fp << sound_horizon(x) << " ";
-    fp << Xe_reion_of_x(x) << " ";
-    fp << tau_reion_of_x(x)          << " ";
-    fp << dtaudx_reion_of_x(x)       << " ";
-    fp << ddtauddx_reion_of_x(x)     << " ";
-    fp << g_tilde_reion_of_x(x)      << " ";
-    fp << dgdx_tilde_reion_of_x(x)   << " ";
-    fp << ddgddx_tilde_reion_of_x(x) << " ";
+    fp << Xe_of_x(x, true) << " ";
+    fp << tau_of_x(x, true)          << " ";
+    fp << dtaudx_of_x(x, true)       << " ";
+    fp << ddtauddx_of_x(x, true)     << " ";
+    fp << g_tilde_of_x(x, true)      << " ";
+    fp << dgdx_tilde_of_x(x, true)   << " ";
+    fp << ddgddx_tilde_of_x(x, true) << " ";
     fp << "\n";
   };
   std::for_each(x_array.begin(), x_array.end(), print_data);

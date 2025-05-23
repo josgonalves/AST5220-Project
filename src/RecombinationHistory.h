@@ -84,21 +84,14 @@ class RecombinationHistory{
     void output(const std::string filename) const;
 
     // Get functions that we must implement
-    double tau_of_x(double x) const;
-    double dtaudx_of_x(double x) const;
-    double ddtauddx_of_x(double x) const;
-    double g_tilde_of_x(double x) const;
-    double dgdx_tilde_of_x(double x) const;
-    double ddgddx_tilde_of_x(double x) const;
-    double tau_reion_of_x(double x) const;
-    double dtaudx_reion_of_x(double x) const;
-    double ddtauddx_reion_of_x(double x) const;
-    double g_tilde_reion_of_x(double x) const;
-    double dgdx_tilde_reion_of_x(double x) const;
-    double ddgddx_tilde_reion_of_x(double x) const;
-    double Xe_of_x(double x) const;
+    double tau_of_x(double x, bool reion) const;
+    double dtaudx_of_x(double x, bool reion) const;
+    double ddtauddx_of_x(double x, bool reion) const;
+    double g_tilde_of_x(double x, bool reion) const;
+    double dgdx_tilde_of_x(double x, bool reion) const;
+    double ddgddx_tilde_of_x(double x, bool reion) const;
+    double Xe_of_x(double x, bool reion) const;
     double ne_of_x(double x) const;
-    double Xe_reion_of_x(double x) const;
     double get_Yp() const;
     double get_zreion() const;
     double get_dzreion() const;
