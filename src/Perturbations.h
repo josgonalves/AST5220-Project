@@ -20,12 +20,12 @@ class Perturbations{
     RecombinationHistory *rec  = nullptr;
    
     // The scales we integrate over
-    const int n_k        = 100;
+    const int n_k        = 300;
     const double k_min   = Constants.k_min;
     const double k_max   = Constants.k_max;
     
     // Start and end of the time-integration
-    const int n_x        = 10000;
+    const int n_x        = 5000;
     const double x_start = Constants.x_start;
     const double x_end   = 0;
 
@@ -45,6 +45,12 @@ class Perturbations{
     Spline2D ST_spline{"ST_spline"};
     Spline2D SE_spline{"SE_spline"};
     
+    // Splines of separate terms of the temperature source
+    Spline2D SW_spline{"SW_spline"};
+    Spline2D Doppler_spline{"Doppler_spline"};
+    Spline2D ISW_spline{"ISW_spline"};
+    Spline2D Quad_spline{"Quad_spline"};
+
     // Splines of mulipole quantities
     // NB: If you use there you have to allocate the container first
     // e.g. Theta_spline = std::vector<Spline2D>(n_ell_theta); before using it
@@ -123,6 +129,10 @@ class Perturbations{
     double get_Theta_p(const double x, const double k, const int ell) const;
     double get_Nu(const double x, const double k, const int ell) const;
     double get_Source_T(const double x, const double k) const;
+    double get_SW_term(const double x, const double k) const;
+    double get_ISW_term(const double x, const double k) const;
+    double get_Doppler_term(const double x, const double k) const;
+    double get_Quad_term(const double x, const double k) const;
     double get_Source_E(const double x, const double k) const;
 };
 

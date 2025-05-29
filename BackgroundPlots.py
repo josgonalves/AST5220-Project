@@ -216,7 +216,7 @@ plt.savefig(BACKGROUND_DIR + "/Hp_of_x.png")
 
 #%%
 
-#Plots of eta(x) in gigaparsec and t(x) in gigayears
+#Plots of eta(x)/c in gigaparsec and t(x) in gigayears
 fig1, axes1 = plt.subplots(nrows=2, figsize=(8, 12), sharex=False)
 axes1[0].grid()
 axes1[0].set_xlabel('x', fontsize = 17)
@@ -226,8 +226,9 @@ axes1[0].tick_params(axis='both', labelsize=13, pad = 10)
 axes1[0].set_yscale('log')
 axes1[0].set_xlim([-15,0])
 
-axes1[0].plot(valuesdic['x'][:1126], [i/(Mpc*1000) for i in valuesdic['eta']][:1126])
+axes1[0].plot(valuesdic['x'][:1126], [i/(1000*Mpc) for i in valuesdic['eta']][:1126])
 
+axes1[0].set_ylim([min([i/(1000*Mpc) for i in valuesdic['eta'][:1126]]), 1.5*max([i/(1000*Mpc) for i in valuesdic['eta'][:1126]])])
 
 axes1[1].set_title('t (Gyr)', fontsize = 17, pad = 10)
 axes1[1].grid()
@@ -236,6 +237,7 @@ axes1[1].tick_params(axis='both', labelsize=13, pad = 10)
 
 axes1[1].set_yscale('log')
 axes1[1].set_xlim([-15,0])
+axes1[1].set_ylim([min([i/Gyr for i in valuesdic['t'][:1126]]), 1.5*max([i/Gyr for i in valuesdic['t'][:1126]])])
 
 
 axes1[1].plot(valuesdic['x'][:1126], [i/Gyr for i in valuesdic['t'][:1126]])

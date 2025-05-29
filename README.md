@@ -75,6 +75,7 @@ Keep in mind that, to facilitate debugging after milestone I, the line `mcmc_fit
      - `solve`: main method for this class. Solves the system of differential equations for the perturbations and splines the results to produce bidimensional functions of `(x,k)` (`integrate_perturbations`). Also computes the source functions for the CMB and matter power spectra (`compute_source_functions`).
         - The system is evolved separately between `x_start` and `x_end` for each value of `k` between `k_min` and `k_max`;
         - The 2 systems of equations and sets of initial conditions (both in the tight-coupling and full regimes) are defined in separate, auxiliary methods.
+     - `compute_source_functions`: computes the temperature and polarization source functions (relevant for milestone IV);
      - `info`: prints information about how the system of perturbations is being integrated (most importantly, the `k` and `x` limits and number of points and the inclusion of `neutrinos` and/or `polarization`);
      - `output`: takes a double `k` and a str `filename` as inputs. Outputs the evolution of the perturbations and source functions for 5000 linearly spaced values of `x` between `x_start` and `x_end`, while keeping `k` fixed, to `filename.txt`. Outputs the times of matter radiation equality, matter dark-energy equality and Last Scattering.
      - `get_(...)`: used to, for a given pair of values `(x, k)`, fetch the following perturbations:
@@ -83,6 +84,34 @@ Keep in mind that, to facilitate debugging after milestone I, the line `mcmc_fit
         - The metric perturbations, `Psi` and `Phi`;
         - The quantity `Pi = Theta2 + Thetap0 + Thetap2`;
         - The temperature and polarization source functions, `Source_T` and `Source_E`, respectively;
-        - The first three multipoles for the temperature perturbations of photons, `Theta`, neutrinos, `Nu` and polarizations, `Thetap`. For these methods, an additional integer value of `l` between `0` and `2` must be specified to indicate which multipole is being determined;
+        - The first three multipoles for the temperature perturbations of photons, `Theta`, neutrinos, `Nu` and polarizations, `Thetap`. For these methods, an additional integer value of `ell` between `0` and `2` must be specified to indicate which multipole is being determined;
 - `PerturbationPlots.py`: python script that produces the plots for the perturbations and saves them to `Project_plots\Perturbations`.
-## Milestone IV - The CMB and matter-power spectra
+## Milestone IV - The CMB and matter power spectra
+- `PowerSpectrum.h` and `PowerSpectrum.cpp` - Header and source files that declare and define the `PowerSpectrum` class and all of its parameters and methods.
+    - **Private Parameters**:
+     - `*cosmo`: A pointer to a `BackgroundCosmology` object (in this project, this was simply the one built in milestone I);
+     - `*rec`: A pointer to a `RecombinationHistory` object (in this project, this was simply the one built in milestone II);
+     - `*pert`: A pointer to a `Perturbations` object (in this project, this was simply the one built in milestone III);
+     - `A_s`, `n_s`: cosmological parameters (primordial amplitude and spectral index, respectively);
+     - `kpivot_mpc`: the value of the arbitrary pivot scale in Mpc^-1;
+     - `separate_components`: boolean variable that decides whether or not to separately calculate the contribution from each component of the temperature source function;
+     - `k_min`, `k_max`: minimum and maximum values of `k` for the line of sight and C_ell integrals;
+     - `ells`: vector containing 63 values of `ell` for which the coefficients in the CMB power spectra are calculated;
+     - `j_ell_splines`: vector of 63 splines for the spherical Bessel functions of each `ell` in `ells`;
+     - `(...)_ell_of_k_spline`: vectors of 63 splines (one for each `ell` in `ells`) for the transfer functions computed utilizing line of sight integration;
+     - `cell_(...)_spline`: splines for interpolating the 63 angular power coefficients that are computed into continuous functions of `ell`;
+     - A `PowerSpectrum` object is initialized by specifying `A_s`, `n_s`, `kpivot_mpc`, `separate_components` and the pointers `*cosmo`, `*rec`, `*pert`.
+    - **Methods**
+     - `solve`: main method for this class:
+        - It begins by setting up three arrays (`k_array_1`,`k_array_2` and `log_k_array`). The first two are linearly spaced in `k` and used in splining the Bessel functions and the transfer functions from L.O.S. integration, respectively. The third is linearly spaced in `log(k)` and used for computing the `C_ell` integral;
+        - It then generates splines of the spherical Bessel functions in terms of `k*eta_0` (`generate_bessel_function_splines`);
+        - Afterward, it performs L.O.S. integration. The method `line_of_sight_integration_single` is defined to take any function of `(x,k)` as an argument and produce a 2D vector containing 63 arrays (one for each of the transfer functions computed). The method `line_of_sight_integration` calls upon `line_of_sight_integration_single` with the source functions from milestone III as arguments, calculating the temperature and polarization multipoles and interpolating the results, outputting a vector of splines;
+        - Finally, the method `solve_for_cell`, which can take any vector of splines of `k` as an argument and perform the `cell` integrals for them, is called for the outputs of the previous point. This produces 63 values of `cell_TT`, `cell_EE` and `cell_TE`, which are splined into continuous functions 
+     - `get_matter_power_spectrum`: computes `P(k,x)` for any pair of values of the two variables;
+     - `get_k_eq`: compute the value of `k` at matter radiation equality;
+     - `get_cell_(...)`: fetch the value of the `cell_TT`, `cell_EE` or `cell_TE` splines for any `ell`;
+     - `output`: takes two strings, `filename1` and `filename2` as inputs. Outputs the following files:
+        - The values of the `cell_TT`,`cell_EE` and `cell_TE`splines (multiplied by a normalization factor for plotting) for all `ell` between 2 and `max(ells)` are output to `filename1`;
+        - The values of `P(x = 0, k)` and all 63 `theta_T` splines for a set of linearly spaced points between `k_min` and `k_max` are output to `filename2`. `filename2` also contains the `k` value at matter radiation equality;
+        - If `separate_components` is set to `True`, a third file (defaulting to the name `contributions.txt`) is produced with the values of the `cell` splines of each term in the temperature source functions, multiplied by the same normalization factor as before.      
+- `PowerSpectrumPlots.py`: python script that produces the plots for the perturbations and saves them to `Project_plots\PowerSpectra`.

@@ -10,13 +10,15 @@ PowerSpectrum::PowerSpectrum(
     Perturbations *pert,
     double A_s,
     double n_s,
-    double kpivot_mpc) : 
+    double kpivot_mpc,
+    bool separate_components) : 
   cosmo(cosmo), 
   rec(rec), 
   pert(pert),
   A_s(A_s),
   n_s(n_s),
-  kpivot_mpc(kpivot_mpc)
+  kpivot_mpc(kpivot_mpc),
+  separate_components(separate_components)
 {}
 
 //====================================================
@@ -29,10 +31,14 @@ void PowerSpectrum::solve(){
   //=========================================================================
   const double eta0 = cosmo -> eta_of_x(0);
 
-  // Compute the spacings for both arrays such that the functions are properly sampled
-  double delta_k = (2.0*M_PI)/(6.0 * eta0);
-  int npts_k = std::trunc((k_max - k_min)/delta_k) + 1;
-  Vector k_array = Utils::linspace(k_min, k_max, npts_k);
+  // Compute the spacings for the arrays such that the functions are properly sampled
+  double delta_k_1 = (2.0*M_PI)/(16.0 * eta0);
+  int npts_k_1 = std::trunc((k_max - k_min)/delta_k_1) + 1;
+  Vector k_array_1 = Utils::linspace(k_min, k_max, npts_k_1);
+
+  double delta_k_2 = (2.0*M_PI)/(6.0 * eta0);
+  int npts_k_2 = std::trunc((k_max - k_min)/delta_k_2) + 1;
+  Vector k_array_2 = Utils::linspace(k_min, k_max, npts_k_2);
 
   double delta_log_k = (2.0 * M_PI)/(6.0*eta0*k_max);
   int npts_log_k = std::trunc((log(k_max) - log(k_min))/delta_log_k) + 1;
@@ -43,13 +49,13 @@ void PowerSpectrum::solve(){
   // TODO: Make splines for j_ell. 
   // Implement generate_bessel_function_splines
   //=========================================================================
-  generate_bessel_function_splines(k_array);
+  generate_bessel_function_splines(k_array_1);
 
   //=========================================================================
   // TODO: Line of sight integration to get Theta_ell(k)
   // Implement line_of_sight_integration
   //=========================================================================
-  line_of_sight_integration(k_array);
+  line_of_sight_integration(k_array_2);
 
   //=========================================================================
   // TODO: Integration to get Cell by solving dCell^f/dlogk = Delta(k) * f_ell(k)^2
@@ -58,6 +64,19 @@ void PowerSpectrum::solve(){
   auto cell_TT = solve_for_cell(log_k_array, thetaT_ell_of_k_spline, thetaT_ell_of_k_spline);
   cell_TT_spline.create(ells, cell_TT, "Cell_TT_of_ell");
   
+  //Get the Cell for each component of the temperature source function
+  if(separate_components){
+    auto cell_SW = solve_for_cell(log_k_array, SW_ell_of_k_spline, SW_ell_of_k_spline);
+    cell_SW_spline.create(ells, cell_SW, "Cell_SW_of_ell");
+    auto cell_ISW = solve_for_cell(log_k_array, ISW_ell_of_k_spline, ISW_ell_of_k_spline);
+    cell_ISW_spline.create(ells, cell_ISW, "Cell_ISW_of_ell");
+    auto cell_Doppler = solve_for_cell(log_k_array, Doppler_ell_of_k_spline, Doppler_ell_of_k_spline);
+    cell_Doppler_spline.create(ells, cell_Doppler, "Cell_Doppler_of_ell");
+    auto cell_Quad = solve_for_cell(log_k_array, Quad_ell_of_k_spline, Quad_ell_of_k_spline);
+    cell_Quad_spline.create(ells, cell_Quad, "Cell_Quad_of_ell");
+  }
+  
+
   if(Constants.polarization){
     auto cell_EE = solve_for_cell(log_k_array, thetaE_ell_of_k_spline, thetaE_ell_of_k_spline);
     cell_EE_spline.create(ells, cell_EE, "Cell_EE_of_ell");
@@ -123,7 +142,8 @@ Vector2D PowerSpectrum::line_of_sight_integration_single(
   double delta_x = (x_max-x_min)/double(600-1);
   Vector x_array = Utils::linspace(x_min, x_max, 600);
 
-  // Determine the particle horizons today and at the L.S.S.
+
+  // Determine the particle horizon today
   double eta0 = cosmo -> eta_of_x(0);
 
   // Make storage for the results
@@ -169,7 +189,7 @@ void PowerSpectrum::line_of_sight_integration(Vector & k_array){
   // Make storage for the splines we are to create
   thetaT_ell_of_k_spline = std::vector<Spline>(nells);
 
-  //============================================================================
+  //=======================================================================
   // TODO: Solve for Theta_ell(k) and spline the result
   //============================================================================
 
@@ -178,14 +198,45 @@ void PowerSpectrum::line_of_sight_integration(Vector & k_array){
     return pert->get_Source_T(x,k);
   };
 
-
   // Do the line of sight integration
   Vector2D thetaT_ell_of_k = line_of_sight_integration_single(k_array, source_function_T);
-  
   for(size_t ell = 0; ell < thetaT_ell_of_k.size(); ell++){
     thetaT_ell_of_k_spline[ell].create(k_array, thetaT_ell_of_k[ell], "ThetaT_ell");
   }
 
+  // Get individual contributions from each term in ST
+  if(separate_components){
+    SW_ell_of_k_spline = std::vector<Spline>(nells);
+    ISW_ell_of_k_spline = std::vector<Spline>(nells);
+    Doppler_ell_of_k_spline = std::vector<Spline>(nells);
+    Quad_ell_of_k_spline = std::vector<Spline>(nells);
+    std::function<double(double,double)> source_function_SW = [&](double x, double k){
+      return pert->get_SW_term(x,k);
+    };
+    Vector2D SW_ell_of_k = line_of_sight_integration_single(k_array, source_function_SW);
+
+    std::function<double(double,double)> source_function_ISW = [&](double x, double k){
+      return pert->get_ISW_term(x,k);
+    };
+    Vector2D ISW_ell_of_k = line_of_sight_integration_single(k_array, source_function_ISW);
+
+    std::function<double(double,double)> source_function_Doppler = [&](double x, double k){
+      return pert->get_Doppler_term(x,k);
+    };
+    Vector2D Doppler_ell_of_k = line_of_sight_integration_single(k_array, source_function_Doppler);
+
+    std::function<double(double,double)> source_function_Quad = [&](double x, double k){
+      return pert->get_Quad_term(x,k);
+    };
+    Vector2D Quad_ell_of_k = line_of_sight_integration_single(k_array, source_function_Quad);
+
+    for(size_t ell = 0; ell < thetaT_ell_of_k.size(); ell++){
+      SW_ell_of_k_spline[ell].create(k_array, SW_ell_of_k[ell], "SW_ell");
+      ISW_ell_of_k_spline[ell].create(k_array, ISW_ell_of_k[ell], "ISW_ell");
+      Doppler_ell_of_k_spline[ell].create(k_array, Doppler_ell_of_k[ell], "Doppler_ell");
+      Quad_ell_of_k_spline[ell].create(k_array, Quad_ell_of_k[ell], "Quad_ell");
+    }
+  }
 
   //============================================================================
   // TODO: Solve for ThetaE_ell(k) and spline
@@ -222,11 +273,10 @@ Vector PowerSpectrum::solve_for_cell(
   for(size_t ell = 0; ell < result.size(); ell++){
 
     for(size_t ik = 1; ik < log_k_array.size(); ik++){
-      double delta_k = k_array[ik]-k_array[ik-1];
 
-      result[ell] = result[ell] + 4 * M_PI * (delta_k/2) 
-        * (f_ell_spline[ell](k_array[ik])*g_ell_spline[ell](k_array[ik])*primordial_power_spectrum(k_array[ik])/k_array[ik] 
-        + f_ell_spline[ell](k_array[ik-1])*g_ell_spline[ell](k_array[ik-1])*primordial_power_spectrum(k_array[ik-1])/k_array[ik-1]);
+      result[ell] = result[ell] + 4 * M_PI * (delta_log_k/2) 
+        * (f_ell_spline[ell](k_array[ik])*g_ell_spline[ell](k_array[ik])*primordial_power_spectrum(k_array[ik])
+        + f_ell_spline[ell](k_array[ik-1])*g_ell_spline[ell](k_array[ik-1])*primordial_power_spectrum(k_array[ik-1]));
     }
 
   }
@@ -275,6 +325,14 @@ double PowerSpectrum::get_cell_TE(const double ell) const{
 double PowerSpectrum::get_cell_EE(const double ell) const{
   return cell_EE_spline(ell);
 }
+double PowerSpectrum::get_k_eq() const{
+  // Fetch the relevant quantities (x,a and H) at matter radiation equality
+  const double x_eq = cosmo -> matter_radiation_equality();
+  const double a_eq = exp(x_eq);
+  const double H_eq = cosmo -> H_of_x(x_eq);
+
+  return a_eq*H_eq/Constants.c;
+}
 
 //====================================================
 // Output the cells to file
@@ -316,5 +374,22 @@ void PowerSpectrum::output(std::string filename1, std::string filename2) const{
   int npts_k = std::trunc((k_max - k_min)/delta_k) + 1;
   Vector k_array = Utils::linspace(k_min, k_max, npts_k);
   std::for_each(k_array.begin(), k_array.end(), print_data_k);
+  fp2 << "k at matter radiation equality:" << "\n";
+  fp2 << get_k_eq();
+
+  if(separate_components){
+    std::string filename3 = "contributions.txt";
+    std::ofstream fp3(filename3.c_str());
+    auto print_data_cpts = [&] (const double ell) {
+      double normfactor  = (ell * (ell+1)) / (2.0 * M_PI) * pow(1e6 * cosmo->get_TCMB(), 2);
+      fp3 << ell                                 << " ";
+      fp3 << cell_SW_spline( ell ) * normfactor  << " ";
+      fp3 << cell_ISW_spline( ell ) * normfactor  << " ";
+      fp3 << cell_Doppler_spline( ell ) * normfactor  << " ";
+      fp3 << cell_Quad_spline( ell ) * normfactor  << " ";
+      fp3 << "\n";
+    };
+    std::for_each(ellvalues.begin(), ellvalues.end(), print_data_cpts);
+  }
 }
 

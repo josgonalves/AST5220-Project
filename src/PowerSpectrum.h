@@ -28,10 +28,12 @@ class PowerSpectrum {
     double kpivot_mpc = 0.05;
 
     // The k-values we compute Theta_ell(k) etc. for
-    const int n_k      = 100;
     const double k_min = Constants.k_min;
     const double k_max = Constants.k_max;
     
+    // Boolean for whether or not to split the components of ST
+    bool separate_components;
+
     // The ells's we will compute Theta_ell and Cell for
     Vector ells{ 
         2,    3,    4,    5,    6,    7,    8,    10,   12,   15,   
@@ -72,6 +74,12 @@ class PowerSpectrum {
     std::vector<Spline> thetaT_ell_of_k_spline;
     std::vector<Spline> thetaE_ell_of_k_spline;
     
+    // Splines for individual components of ST
+    std::vector<Spline> SW_ell_of_k_spline;
+    std::vector<Spline> ISW_ell_of_k_spline;
+    std::vector<Spline> Doppler_ell_of_k_spline;
+    std::vector<Spline> Quad_ell_of_k_spline;
+
     //=====================================================================
     // [3] Integrate to get power-spectrum
     //=====================================================================
@@ -88,7 +96,12 @@ class PowerSpectrum {
     Spline cell_TT_spline{"cell_TT_spline"};
     Spline cell_TE_spline{"cell_TE_spline"};
     Spline cell_EE_spline{"cell_EE_spline"};
-
+    
+    // Individual contributions to TT spectrum
+    Spline cell_SW_spline{"SW_cell_spline"};
+    Spline cell_ISW_spline{"ISW_cell_spline"};
+    Spline cell_Doppler_spline{"Doppler_cell_spline"};
+    Spline cell_Quad_spline{"Quad_cell_spline"};
   public:
 
     // Constructors
@@ -99,7 +112,8 @@ class PowerSpectrum {
         Perturbations *pert,
         double A_s,
         double n_s,
-        double kpivot_mpc);
+        double kpivot_mpc,
+        bool separate_components);
     
     // Do all the solving: bessel functions, LOS integration and then compute Cells
     void solve();
@@ -115,7 +129,9 @@ class PowerSpectrum {
     double get_cell_TE(const double ell) const;
     double get_cell_EE(const double ell) const;
 
-    // Output Cells in units of l(l+1)/2pi (muK)^2
+    // Get the k at equality for plotting
+    double get_k_eq() const;
+    // Output Cells in units of l(l+1)/2pi (muK)^2, output P(k)
     void output(std::string filename1, std::string filename2) const;
 };
 

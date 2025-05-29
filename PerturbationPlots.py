@@ -61,7 +61,7 @@ with open("perturbations_k0.1.txt", 'r') as file:
    valuesdic1 = {'x': [float(line.split(' ')[0]) for line in lines[:-4]], 'Theta0': [float(line.split(' ')[1]) for line in lines[:-4]],'Theta1': [float(line.split(' ')[2]) for line in lines[:-4]],
                 'Theta2': [float(line.split(' ')[3]) for line in lines[:-4]], 'Phi': [float(line.split(' ')[4]) for line in lines[:-4]],'Psi': [float(line.split(' ')[5]) for line in lines[:-4]],'Pi': [float(line.split(' ')[6]) for line in lines[:-4]],
                 'Thetap0': [float(line.split(' ')[7]) for line in lines[:-4]], 'Thetap1': [float(line.split(' ')[8]) for line in lines[:-4]], 'Thetap2': [float(line.split(' ')[9]) for line in lines[:-4]], 'Nu0': [float(line.split(' ')[10]) for line in lines[:-4]], 'Nu1': [float(line.split(' ')[11]) for line in lines[:-4]], 'Nu2': [float(line.split(' ')[12]) for line in lines[:-4]],
-                'Source_T': [float(line.split(' ')[13]) for line in lines[:-4]], 'delta_b': [float(line.split(' ')[17]) for line in lines[:-4]], 'delta_CDM': [float(line.split(' ')[18]) for line in lines[:-4]], 'v_b': [float(line.split(' ')[19]) for line in lines[:-4]], 'v_CDM': [float(line.split(' ')[20]) for line in lines[:-4]]}
+                'Source_T_10': [float(line.split(' ')[14]) for line in lines[:-4]], 'Source_T_100': [float(line.split(' ')[15]) for line in lines[:-4]], 'delta_b': [float(line.split(' ')[17]) for line in lines[:-4]], 'delta_CDM': [float(line.split(' ')[18]) for line in lines[:-4]], 'v_b': [float(line.split(' ')[19]) for line in lines[:-4]], 'v_CDM': [float(line.split(' ')[20]) for line in lines[:-4]], 'Source_E': [float(line.split(' ')[-2]) for line in lines[:-4]]}
    matradequalxtz = [float(i) for i in lines[-3].split(':')[1].split(' ')]
    matlambdaequalxtz = [float(i) for i in lines[-2].split(':')[1].split(' ')]
    last_scattering_xtz = [float(i) for i in lines[-1].split(':')[1].split(' ')]
@@ -72,14 +72,14 @@ with open("perturbations_k0.01.txt", 'r') as file:
    valuesdic2 = {'x': [float(line.split(' ')[0]) for line in lines[:-4]], 'Theta0': [float(line.split(' ')[1]) for line in lines[:-4]],'Theta1': [float(line.split(' ')[2]) for line in lines[:-4]],
                 'Theta2': [float(line.split(' ')[3]) for line in lines[:-4]], 'Phi': [float(line.split(' ')[4]) for line in lines[:-4]],'Psi': [float(line.split(' ')[5]) for line in lines[:-4]],'Pi': [float(line.split(' ')[6]) for line in lines[:-4]],
                 'Thetap0': [float(line.split(' ')[7]) for line in lines[:-4]], 'Thetap1': [float(line.split(' ')[8]) for line in lines[:-4]], 'Thetap2': [float(line.split(' ')[9]) for line in lines[:-4]], 'Nu0': [float(line.split(' ')[10]) for line in lines[:-4]], 'Nu1': [float(line.split(' ')[11]) for line in lines[:-4]], 'Nu2': [float(line.split(' ')[12]) for line in lines[:-4]],
-                'Source_T': [float(line.split(' ')[13]) for line in lines[:-4]], 'delta_b': [float(line.split(' ')[17]) for line in lines[:-4]], 'delta_CDM': [float(line.split(' ')[18]) for line in lines[:-4]], 'v_b': [float(line.split(' ')[19]) for line in lines[:-4]], 'v_CDM': [float(line.split(' ')[20]) for line in lines[:-4]]}
+                'Source_T_10': [float(line.split(' ')[14]) for line in lines[:-4]], 'Source_T_100': [float(line.split(' ')[15]) for line in lines[:-4]], 'delta_b': [float(line.split(' ')[17]) for line in lines[:-4]], 'delta_CDM': [float(line.split(' ')[18]) for line in lines[:-4]], 'v_b': [float(line.split(' ')[19]) for line in lines[:-4]], 'v_CDM': [float(line.split(' ')[20]) for line in lines[:-4]], 'Source_E': [float(line.split(' ')[-2]) for line in lines[:-4]]}
 with open("perturbations_k0.001.txt", 'r') as file:
    lines = file.readlines()
    
    valuesdic3 = {'x': [float(line.split(' ')[0]) for line in lines[:-4]], 'Theta0': [float(line.split(' ')[1]) for line in lines[:-4]],'Theta1': [float(line.split(' ')[2]) for line in lines[:-4]],
                 'Theta2': [float(line.split(' ')[3]) for line in lines[:-4]], 'Phi': [float(line.split(' ')[4]) for line in lines[:-4]],'Psi': [float(line.split(' ')[5]) for line in lines[:-4]],'Pi': [float(line.split(' ')[6]) for line in lines[:-4]],
                 'Thetap0': [float(line.split(' ')[7]) for line in lines[:-4]], 'Thetap1': [float(line.split(' ')[8]) for line in lines[:-4]], 'Thetap2': [float(line.split(' ')[9]) for line in lines[:-4]], 'Nu0': [float(line.split(' ')[10]) for line in lines[:-4]], 'Nu1': [float(line.split(' ')[11]) for line in lines[:-4]], 'Nu2': [float(line.split(' ')[12]) for line in lines[:-4]],
-                'Source_T': [float(line.split(' ')[13]) for line in lines[:-4]], 'delta_b': [float(line.split(' ')[17]) for line in lines[:-4]], 'delta_CDM': [float(line.split(' ')[18]) for line in lines[:-4]], 'v_b': [float(line.split(' ')[19]) for line in lines[:-4]], 'v_CDM': [float(line.split(' ')[20]) for line in lines[:-4]]}
+                'Source_T_10': [float(line.split(' ')[14]) for line in lines[:-4]], 'Source_T_100': [float(line.split(' ')[15]) for line in lines[:-4]], 'delta_b': [float(line.split(' ')[17]) for line in lines[:-4]], 'delta_CDM': [float(line.split(' ')[18]) for line in lines[:-4]], 'v_b': [float(line.split(' ')[19]) for line in lines[:-4]], 'v_CDM': [float(line.split(' ')[20]) for line in lines[:-4]], 'Source_E': [float(line.split(' ')[-2]) for line in lines[:-4]]}
    
 """
 Define the directories for plots. If they don't yet exist, create them.
@@ -159,7 +159,7 @@ for i in axes:
     i.tick_params(axis='both', labelsize=12)
 
 
-axes[0].set_title(r'$ v_\gamma= -3\Theta_1$', fontsize = 20, pad = 10)
+axes[0].set_title(r'$v_\gamma= -3\Theta_1$', fontsize = 20, pad = 10)
 axes[0].plot(valuesdic1['x'], [-3*i for i in valuesdic1['Theta1']], color = 'green', label = 'k = 0.1/Mpc')
 axes[0].plot(valuesdic2['x'], [-3*i for i in valuesdic2['Theta1']], color = 'orange', label = 'k = 0.01/Mpc')
 axes[0].plot(valuesdic3['x'], [-3*i for i in valuesdic3['Theta1']], color = 'blue', label = 'k = 0.001/Mpc')
@@ -330,8 +330,8 @@ axes[0].axvline(last_scattering_xtz[0], linestyle='--', color='black')
 
 
 axes[1].set_title(r'$v_{\gamma}, v_{b}$', fontsize = 25, pad = 10)
-axes[1].plot(valuesdic1['x'][:3697], [-3*i for i in valuesdic1['Theta1']][:3697], color = 'green', label = r'$\v_{\gamma}$')
-axes[1].plot(valuesdic1['x'][:3697], valuesdic1['v_b'][:3697], color = 'orange', label = r'$\v_{b}$')
+axes[1].plot(valuesdic1['x'][:3697], [-3*i for i in valuesdic1['Theta1']][:3697], color = 'green', label = r'$v_{\gamma}$')
+axes[1].plot(valuesdic1['x'][:3697], valuesdic1['v_b'][:3697], color = 'orange', label = r'$v_{b}$')
 axes[1].axvline(last_scattering_xtz[0], linestyle='--', color='black')
 
 axes[0].legend(fontsize = 20)
@@ -340,3 +340,39 @@ axes[1].legend(fontsize = 20)
 plt.subplots_adjust(hspace=0.4)
 
 plt.savefig(PERTURBATIONS_DIR + "/photon_baryon_k01.png", bbox_inches = "tight")
+
+#%%
+
+# Plot Pi
+plt.figure(18, figsize = (7,4))
+plt.grid()
+plt.xlabel('x', fontsize = 14)
+plt.title(r'$ \Pi$', fontsize = 17, pad = 10)
+plt.tick_params(axis='y', labelsize=11.5)
+
+plt.xlim([-15,0])
+
+plt.axvline(matradequalxtz[0], linestyle='--', color='black')
+plt.axvline(matlambdaequalxtz[0], linestyle='--', color='red')
+plt.plot(valuesdic1['x'], [i+j for i,j in zip(valuesdic1['Theta0'],valuesdic1['Psi'])], color = 'green', label = 'k = 0.1/Mpc')
+plt.plot(valuesdic2['x'], [i+j for i,j in zip(valuesdic2['Theta0'],valuesdic2['Psi'])], color = 'orange', label = 'k = 0.01/Mpc')
+plt.plot(valuesdic3['x'], [i+j for i,j in zip(valuesdic3['Theta0'],valuesdic3['Psi'])], color = 'blue', label = 'k = 0.001/Mpc')
+plt.legend()
+#%%
+
+# Plot Pi
+plt.figure(19, figsize = (7,4))
+plt.grid()
+plt.xlabel('x', fontsize = 14)
+plt.title(r'$ \Pi$', fontsize = 17, pad = 10)
+plt.tick_params(axis='y', labelsize=11.5)
+
+plt.xlim([-15,-0.1])
+
+plt.axvline(matradequalxtz[0], linestyle='--', color='black')
+plt.axvline(matlambdaequalxtz[0], linestyle='--', color='red')
+#plt.plot(valuesdic1['x'], valuesdic1['Source_T_10'], color = 'green', label = 'k = 0.1/Mpc')
+plt.plot(valuesdic2['x'], valuesdic2['Source_T_100'], color = 'orange', label = 'k = 0.01/Mpc')
+#plt.plot(valuesdic3['x'], valuesdic3['Source_T_10'], color = 'blue', label = 'k = 0.001/Mpc')
+plt.legend()
+

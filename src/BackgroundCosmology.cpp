@@ -194,9 +194,11 @@ double BackgroundCosmology::get_OmegaK(double x) const{
 }
 
 double BackgroundCosmology::get_angular_distance_of_x(double x) const{
+  // get the comoving distance
   double cdistance = get_comoving_distance_of_x(x);
-  double r;
 
+  // define the radial coordinate distance differently depending on the curvature of the universe
+  double r;
   if (OmegaK == 0.0){
     r = cdistance;
   }

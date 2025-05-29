@@ -47,7 +47,7 @@ void RecombinationHistory::solve_number_density_electrons(){
   // Used to save the index of x_array at which the Saha regime ends
   int splitting_index;
 
-  // Calculate recombination history
+  // Boolean to keep track of when the Saha regime ends
   bool saha_regime = true;
   for(int i = 0; i < npts_rec_arrays; i++){
 
@@ -68,6 +68,8 @@ void RecombinationHistory::solve_number_density_electrons(){
       splitting_index = i;
     };
 
+    // The reionization correction is only implemented in the Peebles regime, but we must
+    // nevertheless append values to both arrays for proper splining.
     if(saha_regime){
      Xe_arr.push_back(log(Xe_current));
      Xe_reion_arr.push_back(log(Xe_current));

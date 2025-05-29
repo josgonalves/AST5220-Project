@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 
   // Power-spectrum parameters
   double A_s         = 2.1e-9;
-  double n_s         = 0.965;
+  double n_s         = 0.965; //0.965
   double kpivot_mpc  = 0.05;
 
   //=========================================================================
@@ -80,7 +80,9 @@ int main(int argc, char **argv){
   // Module IV
   //=========================================================================
 
-  PowerSpectrum power(&cosmo, &rec, &pert, A_s, n_s, kpivot_mpc);
+  // Last variable corresponds to whether one wants to split the components of ST or not 
+  // This takes quite a long time and is not strictly necessary, so set to zero if you do not want it
+  PowerSpectrum power(&cosmo, &rec, &pert, A_s, n_s, kpivot_mpc, 0);
   power.solve();
   power.output("cells.txt", "pofk.txt");
   
