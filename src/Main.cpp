@@ -86,8 +86,7 @@ int main(int argc, char **argv){
   power.solve();
   power.output("cells.txt", "pofk.txt");
   
-  // Remove when module is completed
-  return 0;
+
 
   Utils::EndTiming("Everything");
 }
