@@ -253,7 +253,7 @@ for i in axes:
     i.grid()
     i.tick_params(axis='both', labelsize=12)
     
-axes[0].set_title(r"$\Theta_{P0}$", fontsize = 20, pad = 10)
+axes[0].set_title(r"$\Theta_{0}^P$", fontsize = 20, pad = 10)
 axes[1].set_title(r"$\Theta_{P1}$", fontsize = 20, pad = 10) 
 axes[2].set_title(r"$\Theta_{P2}$", fontsize = 20, pad = 10) 
 

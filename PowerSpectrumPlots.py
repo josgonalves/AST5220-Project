@@ -171,7 +171,7 @@ for i in axes:
     i.yaxis.labelpad = 20
     i.set_xscale('log')
     i.set_xticks(xticks, labels=[str(x) for x in xticks])
-    i.tick_params(axis='both', labelsize=15)
+    i.tick_params(axis='both', labelsize=17)
 axes[0].set_title('CMB Temperature power spectrum', fontsize = 25, pad = 10)
 axes[0].set_ylabel(r'$\ell(\ell+1)C_\ell^{TT}/\,2\pi\ (\mu K^2)$', fontsize = 23)
 axes[0].plot(valuesdic1['ell'], valuesdic1['CellTT'], label = 'Numerical prediction')
@@ -204,7 +204,7 @@ ax.errorbar(EE_ell_errors['ell'], EE_ell_errors['Cell'], yerr = error_array_EE, 
 ax.set_xlim([2,2000])
 xticks = [500, 1000, 1500, 2000]
 ax.set_xticks(xticks, labels=[str(x) for x in xticks])
-ax.tick_params(axis='both', labelsize=17)
+ax.tick_params(axis='both', labelsize=19)
 
 axins = inset_axes(ax, width="30%", height="35%", loc="lower center")
 
@@ -220,6 +220,7 @@ axins.set_ylim(min(y[:42]), max(y[:42])+0.1)
 axins.tick_params(labelsize=8)
 axins.xaxis.set_ticks_position('top')
 axins.tick_params(axis='x', labelbottom=False, labeltop=True)
+axins.tick_params(axis='both', labelsize=12)
 
 ax.legend(fontsize = 16, loc = 'upper left')
 mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
@@ -227,7 +228,7 @@ mark_inset(ax, axins, loc1=2, loc2=4, fc="none", ec="0.5")
 
 plt.savefig(SPECTRUM_DIR + "/EE_Spectrum.png", bbox_inches = "tight")
 #%%
-plt.figure(9, figsize = (12, 6))
+plt.figure(9, figsize = (10, 6.5))
 
 plt.title('CMB temperature-polarization cross spectrum', fontsize = 25, pad = 10)
 plt.xlabel(r'$\ell$', fontsize = 25)
@@ -240,7 +241,7 @@ plt.errorbar(TE_ell_errors['ell'], TE_ell_errors['Cell'], yerr = error_array_TE,
 plt.xlim([2,2000])
 xticks = [500, 1000, 1500, 2000]
 plt.xticks(xticks, labels=[str(x) for x in xticks])
-plt.tick_params(axis='both', labelsize=17)
+plt.tick_params(axis='both', labelsize=19)
 
 plt.tight_layout()
 
@@ -271,7 +272,7 @@ plt.errorbar(SDSS_DR7_LRG_errors['k'], SDSS_DR7_LRG_errors['p_of_k'], yerr = SDS
 #Plot vertical line of equality scale
 plt.plot([k_eq * Mpc/h for i in range(100)], np.linspace(100, max([i * (h/Mpc)**3 for i in valuesdic2['pofk']]), 100), linestyle='--', color='red')
 
-plt.tick_params(axis='both', labelsize=15)
+plt.tick_params(axis='both', labelsize=19)
 plt.legend(fontsize = 17)
 plt.tight_layout()
 plt.savefig(SPECTRUM_DIR + "/Matter_power_Spectrum.png", bbox_inches = "tight")
@@ -286,7 +287,9 @@ for i in axes:
     i.set_xlabel(r'$k\eta_0$', fontsize = 18)
     i.tick_params(axis='both', labelsize=12)
     i.set_xlim([0,200])
-
+    i.grid()
+    i.tick_params(axis='both', labelsize=15)
+    
 axes[0].set_ylabel(r'$\Theta_{10}(k)$', fontsize = 18)
 axes[0].plot([i * eta0 for i in valuesdic2['k']], valuesdic2['Theta10'], label = r'$\ell=10$')
 axes[0].yaxis.labelpad = 20
@@ -305,7 +308,8 @@ for i in axes:
     i.set_xlabel(r'$k\eta_0$', fontsize = 18)
     i.tick_params(axis='both', labelsize=12)
     i.set_xlim([0,200])
- 
+    i.grid()
+    i.tick_params(axis='both', labelsize=15)
     
 axes[0].set_ylabel(r'$|\Theta_{10}|^2(k)/k\,(10^{-7} \eta_0)$', fontsize = 18)
 axes[0].plot([i * eta0 for i in valuesdic2['k']], [i**2*10**7/(j*eta0) for i,j in zip(valuesdic2['Theta10'], valuesdic2['k'])], label = r'$\ell=100$')

@@ -220,7 +220,7 @@ plt.savefig(BACKGROUND_DIR + "/Hp_of_x.png")
 fig1, axes1 = plt.subplots(nrows=2, figsize=(8, 12), sharex=False)
 axes1[0].grid()
 axes1[0].set_xlabel('x', fontsize = 17)
-axes1[0].set_title(r'$\eta$ (Gpc)', fontsize = 17, pad = 5)
+axes1[0].set_title(r'$\eta$ (Gpc)', fontsize = 18, pad = 5)
 axes1[0].tick_params(axis='both', labelsize=13, pad = 10)
 
 axes1[0].set_yscale('log')
@@ -230,7 +230,7 @@ axes1[0].plot(valuesdic['x'][:1126], [i/(1000*Mpc) for i in valuesdic['eta']][:1
 
 axes1[0].set_ylim([min([i/(1000*Mpc) for i in valuesdic['eta'][:1126]]), 1.5*max([i/(1000*Mpc) for i in valuesdic['eta'][:1126]])])
 
-axes1[1].set_title('t (Gyr)', fontsize = 17, pad = 10)
+axes1[1].set_title('t (Gyr)', fontsize = 18, pad = 10)
 axes1[1].grid()
 axes1[1].set_xlabel("x", fontsize = 17)
 axes1[1].tick_params(axis='both', labelsize=13, pad = 10)
@@ -253,10 +253,10 @@ plt.savefig(BACKGROUND_DIR + "/t_and_eta_of_x.png")
 
 fig, axes = plt.subplots(nrows=2, figsize=(8, 12), sharex=False)
 
-axes[0].set_title(r"$\mathcal{H}\,'/\mathcal{H}$", fontsize = 16, pad = 10)
+axes[0].set_title(r"$\mathcal{H}\,'/\mathcal{H}$", fontsize = 18, pad = 10)
 axes[0].grid()
-axes[0].set_xlabel('x', fontsize = 14)
-axes[0].tick_params(axis='y', labelsize=11.5)
+axes[0].set_xlabel('x', fontsize = 16)
+axes[0].tick_params(axis='y', labelsize=13)
 
 axes[0].set_xlim([-15,5])
 
@@ -268,10 +268,10 @@ axes[0].plot(valuesdic['x'],[i/j for i,j in zip(valuesdic['dHpdx'], valuesdic['H
 #plot H''p/Hp
 
 
-axes[1].set_title(r"$\mathcal{H}\,''/\mathcal{H}$", fontsize = 16, pad = 10)
+axes[1].set_title(r"$\mathcal{H}\,''/\mathcal{H}$", fontsize = 18, pad = 10)
 axes[1].grid()
-axes[1].set_xlabel('x', fontsize = 14)
-axes[1].tick_params(axis='y', labelsize=11.5)
+axes[1].set_xlabel('x', fontsize = 16)
+axes[1].tick_params(axis='y', labelsize=13)
 axes[1].set_xlim([-15,5])
 
 axes[1].plot(valuesdic['x'],[i/j for i,j in zip(valuesdic['ddHpddx'], valuesdic['Hp'])])

@@ -143,7 +143,9 @@ plt.ylim([0,1])
 plt.xlabel(r'$\Omega_{\rm M0}$', fontsize = 14)
 plt.scatter(accepted_omegaM, accepted_omegaL, label = '1$\sigma$ region')
 plt.plot(np.linspace(0,1,100),[1-i for i in np.linspace(0,1,100)], '--', color='black', label = 'Flat universe')
-plt.legend(bbox_to_anchor=(1.35, 1))
+plt.scatter(OmegaB+OmegaCDM, OmegaLambda, color='orange', label = 'Fiducial values')
+
+plt.legend(bbox_to_anchor=(1.45, 1), fontsize = 12)
 plt.savefig(SUPERNOVA_DIR + "/Omega_M_Lambda_Plane.png", bbox_inches='tight')
 
 #%%
